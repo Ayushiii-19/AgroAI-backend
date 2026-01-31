@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🌿 AgroAI Platform</title>
+<style>
+body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    padding: 50px;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    background: rgba(0,0,0,0.4);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px #00ffcc;
+}
+
+h1 {
+    color: #00ffcc;
+}
+
+input {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background: #00ffcc;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00ffaa;
+}
+
+.result {
+    margin-top: 30px;
+    text-align: left;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌿 AgroAI Platform</h1>
+    <p>Enterprise Crop Intelligence System</p>
+
+    <input type="file" id="imageInput" accept="image/*">
+    <br>
+    <button onclick="runDiagnosis()">🚀 Run AI Diagnosis</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+async function runDiagnosis() {
+    const input = document.getElementById("imageInput");
+    const resultDiv = document.getElementById("result");
+
+    if (input.files.length === 0) {
+        alert("Please select an image first!");
+        return;
+    }
+
+    resultDiv.innerHTML = "⏳ Analyzing crop image...";
+
+    const formData = new FormData();
+    formData.append("file", input.files[0]);
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            resultDiv.innerHTML = "❌ Error: " + data.error;
+        } else {
+            resultDiv.innerHTML = `
+                <h3>🌱 Disease: ${data.prediction}</h3>
+                <h3>📊 Confidence: ${data.confidence}%</h3>
+                <p><strong>💊 Treatment:</strong> ${data.treatment}</p>
+            `;
+        }
+    } catch (err) {
+        resultDiv.innerHTML = "❌ Server not reachable. Is backend running?";
+    }
+}
+</script>
+
+</body>
+</html>

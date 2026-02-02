@@ -1,3 +1,12 @@
+import os
+import gdown
+
+MODEL_PATH = "crop_model.h5"
+MODEL_URL = "PUT_GOOGLE_DRIVE_LINK_HERE"
+
+if not os.path.exists(MODEL_PATH):
+    print("Downloading ML model...")
+    gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import numpy as np
